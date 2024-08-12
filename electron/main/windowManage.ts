@@ -61,17 +61,19 @@ export function createMainWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
-
   mainWindow.on("focus", () => {
+    //窗口显示触发
     mainWindow?.flashFrame(false);
     registerShortcuts();
   });
 
   mainWindow.on("blur", () => {
+    //窗口失去焦点触发
     unregisterShortcuts();
   });
 
   mainWindow.on("close", (e) => {
+    //主窗口关闭触发
     if (
       getIsForceQuit() ||
       !mainWindow.isVisible() ||

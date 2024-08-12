@@ -1,6 +1,9 @@
-import { app, Menu, Tray } from "electron";
+import { app, Menu, Tray ,nativeImage } from "electron";
 import { t } from "i18next";
 import { hideWindow, showWindow } from "./windowManage";
+const path = require('path');
+//系统图标
+const iconPath = path.join(`./dist/icons/icon.ico`);
 
 let appTray: Tray;
 
@@ -15,10 +18,6 @@ export const createTray = () => {
       click: hideWindow,
     },
     {
-      label: t("system.toggleDevTools"),
-      role: "toggleDevTools",
-    },
-    {
       label: t("system.quit"),
       click: () => {
         global.forceQuit = true;
@@ -29,10 +28,31 @@ export const createTray = () => {
   appTray = new Tray(global.pathConfig.trayIcon);
   appTray.setToolTip(app.getName());
   appTray.setIgnoreDoubleClickEvents(true);
+  //设置单击时展示主页
   appTray.on("click", showWindow);
-
+  //定义上下文的菜单
   appTray.setContextMenu(trayMenu);
 };
+
+let nowFlashTimerStatus = null;
+export const flashFrame=(isFlash)=>{
+  //设置系统托盘闪烁
+  if(isFlash){
+    clearInterval(nowFlashTimerStatus)
+    let flag = false
+    nowFlashTimerStatus = setInterval(() => {
+      flag = !flag
+      if(flag){
+        appTray.setImage(nativeImage.createEmpty())
+      }else {
+        appTray.setImage(iconPath)
+      }
+    },500)
+  }else {
+    appTray.setImage(iconPath)
+    clearInterval(nowFlashTimerStatus)
+  }
+}
 
 export const destroyTray = () => {
   if (!appTray || appTray.isDestroyed()) return;

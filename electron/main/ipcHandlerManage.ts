@@ -1,5 +1,6 @@
 import { app, ipcMain } from "electron";
 import { closeWindow, minimize, splashEnd, updateMaximize } from "./windowManage";
+import {flashFrame} from "./trayManage";
 import { IpcRenderToMain } from "../constants";
 import { getStore } from "./storeManage";
 import { changeLanguage } from "../i18n";
@@ -14,6 +15,14 @@ export const setIpcMainListener = () => {
       app.relaunch();
       app.exit(0);
     });
+  });
+  ipcMain.handle("settingHasUnreadMessage",()=>{
+    //设置有未读消息,系统托盘停止闪烁
+    flashFrame(true)
+  });
+  ipcMain.handle("settingNotUnreadMessage",()=>{
+    //设置无未读消息,系统托盘停止闪烁
+    flashFrame(false)
   });
   ipcMain.handle("main-win-ready", () => {
     splashEnd();

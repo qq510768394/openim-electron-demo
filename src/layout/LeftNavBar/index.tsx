@@ -2,7 +2,6 @@ import { RightOutlined } from "@ant-design/icons";
 import { Badge, Divider, Layout, Popover, Upload } from "antd";
 import clsx from "clsx";
 import i18n, { t } from "i18next";
-import { UploadRequestOption } from "rc-upload/lib/interface";
 import React, { memo, useRef, useState } from "react";
 import ImageResizer from "react-image-file-resizer";
 import { UNSAFE_NavigationContext, useResolvedPath } from "react-router-dom";
@@ -17,8 +16,6 @@ import message_icon_active from "@/assets/images/nav/nav_bar_message_active.png"
 import change_avatar from "@/assets/images/profile/change_avatar.png";
 import OIMAvatar from "@/components/OIMAvatar";
 import { useContactStore, useConversationStore, useUserStore } from "@/store";
-import { ChildWindowOptions } from "@/types/common";
-import { openAbout, openPersonalSettings } from "@/utils/childWindows";
 import { feedbackToast } from "@/utils/common";
 import emitter from "@/utils/events";
 
@@ -96,6 +93,11 @@ const NavItem = ({ nav: { icon, icon_active, title, path } }: { nav: NavItemType
   };
 
   const getBadge = () => {
+    if (unReadCount > 0) {
+      window.electronAPI?.ipcInvoke("settingHasUnreadMessage");
+    } else {
+      window.electronAPI?.ipcInvoke("settingNotUnreadMessage");
+    }
     if (path === "/chat") {
       return unReadCount;
     }
