@@ -18,7 +18,7 @@ const ChatFooter = () => {
   const ckRef = useRef<CKEditorRef>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(document.createElement("textarea"));
 
-  const { createImageOrVideoMessage } = useFileMessage();
+  const { createImageOrVideoMessage,createFileMessage } = useFileMessage();
   const { sendMessage } = useSendMessage();
 
   const onChange = (value: string) => {
@@ -73,6 +73,7 @@ const ChatFooter = () => {
           sendEmoji={sendEmoji}
           sendMessage={sendMessage}
           createImageOrVideoMessage={createImageOrVideoMessage}
+          createFileMessage={createFileMessage}
         />
         <div className="relative flex flex-1 flex-col overflow-hidden">
           <CKEditor

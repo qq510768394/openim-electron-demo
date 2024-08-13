@@ -33,21 +33,20 @@ const FileMessageRender: FC<IMessageItemProps> = ({ message }) => {
   const isSending = message.status === MessageStatus.Sending;
   return (
     <Spin spinning={isSending}>
-        <div style={{width:240, padding:10,border:'1px solid rgba(0,0,0,0.1)', borderRadius:5,  display:"flex",alignItems:"center",justifyContent:'space-between'}}>
-            <div>
-                <div style={{fontWeight:600,marginBottom:5}}>{fileName}</div>
-                <div>{fileSize}</div>
-            </div>
-            <div>
-                <a href={sourceUrl} style={{position:"relative"}}>
-                    <img style={{width: 50 ,height :50}} src={fileIcon}></img>
-                    <div style={{position:'absolute',left:0,right:0,top:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        <img style={{width:30,height:30}} src={downloadIcon}></img>
-                    </div>
-
-                </a>
-            </div>
+      <div style={{width:240, padding:10,border:'1px solid rgba(0,0,0,0.1)', borderRadius:5,  display:"flex",alignItems:"center",justifyContent:'space-between'}}>
+        <div>
+          <div style={{fontWeight:600,marginBottom:5}}>{fileName}</div>
+          <div>{fileSize}</div>
         </div>
+        <div>
+          <a href={sourceUrl} style={{position:"relative"}}>
+            <img style={{width: 50 ,height :50}} src={fileIcon}></img>
+            <div style={{position:'absolute',left:0,right:0,top:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <img style={{width:30,height:30}} src={downloadIcon}></img>
+            </div>
+          </a>
+        </div>
+      </div>
     </Spin>
   );
 };

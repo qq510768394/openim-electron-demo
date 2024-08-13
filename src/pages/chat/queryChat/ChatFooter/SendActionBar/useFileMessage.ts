@@ -72,7 +72,17 @@ export function useFileMessage() {
       };
       img.src = _URL.createObjectURL(file);
     });
-
+  const createFileMessage = async (file: FileWithPath) => {
+    const options = {
+      file: file,
+      filePath: "",
+      fileName: file.name,
+      uuid: uuidV4(),
+      sourceUrl: "",
+      fileSize: file.size,
+    }
+    return (await IMSDK.createFileMessageByFile(options)).data;
+  };
   const getVideoSnshotFile = (file: File): Promise<File> => {
     const url = URL.createObjectURL(file);
     return new Promise((reslove, reject) => {
@@ -115,5 +125,6 @@ export function useFileMessage() {
     getVideoMessage,
     getVideoSnshotFile,
     createImageOrVideoMessage,
+    createFileMessage,
   };
 }

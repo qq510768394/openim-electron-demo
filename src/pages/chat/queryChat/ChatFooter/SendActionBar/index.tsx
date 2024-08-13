@@ -12,6 +12,7 @@ import emoji from "@/assets/images/chatFooter/emoji.png";
 import image from "@/assets/images/chatFooter/image.png";
 import rtc from "@/assets/images/chatFooter/rtc.png";
 import video from "@/assets/images/chatFooter/video.png";
+import File from "@/assets/images/chatFooter/file.png";
 import { EmojiData } from "@/components/CKEditor";
 
 import { SendMessageParams } from "../useSendMessage";
@@ -39,43 +40,57 @@ const sendActionList = [
     title: t("placeholder.video"),
     icon: video,
     key: "video",
+    //可以用,隔开,支持多样文件后缀
     accept: ".mp4",
     comp: null,
     placement: undefined,
   },
   {
-    title: t("placeholder.call"),
-    icon: rtc,
-    key: "rtc",
-    accept: undefined,
-    comp: <CallPopContent />,
-    placement: "top",
+    title: "文件",
+    icon: File,
+    key: "file",
+    accept: "*",
+    comp: null,
+    placement: undefined,
   },
+  // {
+  //   title: t("placeholder.call"),
+  //   icon: rtc,
+  //   key: "rtc",
+  //   accept: undefined,
+  //   comp: <CallPopContent />,
+  //   placement: "top",
+  // },
 ];
 
 i18n.on("languageChanged", () => {
   sendActionList[0].title = t("placeholder.emoji");
   sendActionList[1].title = t("placeholder.image");
   sendActionList[2].title = t("placeholder.video");
-  sendActionList[3].title = t("placeholder.call");
+  sendActionList[3].title = "文件";
+  // sendActionList[4].title = t("placeholder.call");
 });
-
 const SendActionBar = ({
   sendEmoji,
   sendMessage,
   createImageOrVideoMessage,
+  createFileMessage,
 }: {
   sendEmoji: (emoji: EmojiData) => void;
   sendMessage: (params: SendMessageParams) => Promise<void>;
   createImageOrVideoMessage: (file: File) => Promise<MessageItem>;
+  createFileMessage: (file: File) => Promise<MessageItem>;
 }) => {
+
   const [visibleState, setVisibleState] = useState({
     rtc: false,
     emoji: false,
   });
 
   const closeAllPop = useCallback(
-    () => setVisibleState({ rtc: false, emoji: false }),
+    () => {
+      setVisibleState({ rtc: false, emoji: false })
+    },
     [],
   );
 
@@ -85,15 +100,24 @@ const SendActionBar = ({
       antdMessage.warning(t("empty.fileContentEmpty"));
       return;
     }
-    const message = await createImageOrVideoMessage(fileEl);
-    sendMessage({
-      message,
-    });
+     if(options.data.uploadFileKey=='image' || options.data.uploadFileKey=='video') {
+      const message = await createImageOrVideoMessage(fileEl);
+      sendMessage({
+        message,
+      });
+    }else{
+      const message = await createFileMessage(fileEl);
+      sendMessage({
+        message,
+      });
+    }
   };
 
   return (
     <div className="flex items-center px-4.5 pt-2">
       {sendActionList.map((action) => {
+        console.log("外壳输出框属性")
+        console.log(action)
         const popProps: PopoverProps = {
           placement: action.placement as TooltipPlacement,
           content:
@@ -115,11 +139,10 @@ const SendActionBar = ({
               return tmpState;
             }),
         };
-
         return (
           <ActionWrap
             popProps={popProps}
-            key={action.key}
+            fileTypeKey={action.key}
             accept={action.accept}
             fileHandle={fileHandle}
           >
@@ -143,11 +166,13 @@ const ActionWrap = ({
   accept,
   popProps,
   children,
+  fileTypeKey,
   fileHandle,
 }: {
   accept?: string;
   children: ReactNode;
   popProps?: PopoverProps;
+  fileTypeKey: string;
   fileHandle: (options: UploadRequestOption) => void;
 }) => {
   return accept ? (
@@ -155,6 +180,7 @@ const ActionWrap = ({
       showUploadList={false}
       customRequest={fileHandle}
       accept={accept}
+      data={{ uploadFileKey: fileTypeKey }}
       multiple
       className="mr-5 flex"
     >
