@@ -32,7 +32,11 @@ const MediaMessageRender: FC<IMessageItemProps> = ({ message }) => {
 
   const sourceUrl = isVideoMessage
     ? message.videoElem.snapshotUrl
-    : message.pictureElem.snapshotPicture.url;
+    : message.pictureElem.sourcePicture.url;
+  //缩略图
+  // const snapshotPicture = isVideoMessage
+  //       ? message.videoElem.snapshotUrl
+  //       : message.pictureElem.snapshotPicture.url;
 
   const isSending = message.status === MessageStatus.Sending;
   const minStyle = { minHeight: `${adaptedHight}px`, minWidth: `${adaptedWidth}px` };

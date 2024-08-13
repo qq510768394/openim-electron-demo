@@ -48,6 +48,7 @@ const LoginForm = ({ loginMethod, setFormType, updateLoginMethod }: LoginFormPro
     params.password = md5(params.password);
     login(params, {
       onSuccess: (data) => {
+        console.error("登入成功!!!!!!!!!!!!!");
         const { chatToken, imToken, userID } = data.data;
         setIMProfile({ chatToken, imToken, userID });
         navigate("/chat");
